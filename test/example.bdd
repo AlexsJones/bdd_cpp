@@ -1,0 +1,4 @@
+Given I am in Debug mode
+When the game has started
+And I am sitting comfortably
+Then I should see the splash screen
