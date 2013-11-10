@@ -17,32 +17,10 @@
  */
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <strings.h>
 #include <jnxc_headers/jnxfile.h>
 #include "parser.h"
-size_t len(const char *in)
-{
-	size_t t = 0;
-	char a = *in;
-	while(a != '\0')
-		++t;
-	
-	return t;
-}
-inline int match(char *a, char *b)
-{
-	char _a = *a,_b = *b;
-	int m = 1;
-	while(_a != '\0')
-	{
-		if(_a != _b)
-		{
-			m == 0;
-		}
-		++_a,++b;
-	}
-	return m;
-}
 typedef enum state{ SEEKING, TESTING, FOUND, DONE } state;
 command_obj *parse_file_to_data(char *fp)
 {
@@ -89,9 +67,12 @@ command_obj *parse_file_to_data(char *fp)
 				current_state = DONE;
 				for(_d=0;_d<4;++_d)
 				{
-					if(match(i[_d],word))
+					if(strcmp(i[_d],word) == 0)
 					{
 						printf("Found word match with %s %s\n",i[_d],word);
+						//we now have our word context, process the line.
+
+
 					}
 				}
 				break;
