@@ -22,6 +22,7 @@
 #include <jnxc_headers/jnxfile.h>
 #include "parser.h"
 typedef enum state{ SEEKING, TESTING, FOUND, DONE } state;
+typedef enum context { GIVEN, WHEN, AND, THEN } context;
 char *i[4] = { "Given","When","And","Then" };
 command_obj *parse_file_to_data(char *fp)
 {
@@ -32,6 +33,7 @@ command_obj *parse_file_to_data(char *fp)
 		printf("Unable to read file\n");
 		return NULL;
 	}
+	context current_context = -1;
 	state current_state = SEEKING;	
 	while(current_state != DONE)
 	{
@@ -67,6 +69,7 @@ command_obj *parse_file_to_data(char *fp)
 					if(strcmp(word,i[l]) == 0)
 					{
 						current_state = FOUND;
+						current_context = l;
 						break;
 					}
 					else{
@@ -75,16 +78,18 @@ command_obj *parse_file_to_data(char *fp)
 				}		
 				break;
 			case FOUND:
-				
-				
-				printf("->");
+				printf("\n");	
+				char *a = malloc(sizeof(char));
+				int f = 1,g=0;
 				while(*b != '\n')
 				{
-					printf("%c",*b);
-					++b;
-				}	
-				printf("\n");
-				++b;
+					memcpy(a + (sizeof(char) * g),b,sizeof(char));
+					a = realloc(a,sizeof(char) * f);
+					++b,++f,++g;
+				
+				}++b;
+				printf("-> %s\n",a);
+				
 				current_state = SEEKING;
 				break;
 		}
