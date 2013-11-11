@@ -22,7 +22,7 @@
 #include <jnxc_headers/jnxfile.h>
 #include "parser.h"
 typedef enum state{ SEEKING, TESTING, FOUND, DONE } state;
-typedef enum context { GIVEN, WHEN, AND, THEN} context;
+typedef enum context { GIVEN, WHEN, AND, THEN } context;
 char *i[4] = { "Given","When","And","Then" };
 command_obj *parse_file_to_data(char *fp)
 {
@@ -86,13 +86,10 @@ command_obj *parse_file_to_data(char *fp)
 				printf("\n");	
 				char *sp = b;	
 				int _l = 0;
-				while(*sp != '\n') ++_l,++sp;	
+				while(*sp != '\n') ++_l,++sp;
 				char *a = malloc(sizeof(char) *_l);
 				memcpy(a,b,sizeof(char) * _l);	
-				//b pointer has been increased to be further down the array, off the line and onto the next
 				b = b + _l +1;
-				printf("-> %s\n",a);
-
 				switch(current_context)
 				{
 					case GIVEN:
@@ -112,8 +109,6 @@ command_obj *parse_file_to_data(char *fp)
 				current_state = SEEKING;
 				break;
 		}
-
-
 	}
 	return cobj;
 }

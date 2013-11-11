@@ -19,6 +19,7 @@
 #include <getopt.h>
 #include <stdio.h>
 #include "parser.h"
+#include "template_factory.h"
 int main(int argc, char **argv)
 {
 	int i,c;
@@ -33,11 +34,20 @@ int main(int argc, char **argv)
 				printf("---------------------------\n");
 				printf("GIVEN -> %s\n",o->gc);
 				printf("WHEN -> %s\n",o->wc);	
-				for(c=0;c<o->ac_c;++c)
-					printf("AND -> %s\n",jnx_list_remove(&o->ac));
+					
+				jnx_node *h = o->ac->head;
+				jnx_node *l = o->ac->head;
+
+				while(h)
+				{
+					printf("AND -> %s\n",h->_data);
+					h = h->next_node;
+				}	
+				h = l;		
 				printf("THEN -> %s\n",o->tc);	
 				printf("---------------------------\n");
-			
+		
+				template_from_commands(o);	
 			
 				command_obj_delete(o);
 				break;
