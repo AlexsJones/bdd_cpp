@@ -22,6 +22,7 @@
 #include <jnxc_headers/jnxfile.h>
 #include "parser.h"
 typedef enum state{ SEEKING, TESTING, FOUND, DONE } state;
+char *i[4] = { "Given","When","And","Then" };
 command_obj *parse_file_to_data(char *fp)
 {
 	char *b;
@@ -32,25 +33,20 @@ command_obj *parse_file_to_data(char *fp)
 		return NULL;
 	}
 	state current_state = SEEKING;	
-	char *i[4] = { "Given","When","And","Then" };
 	while(current_state != DONE)
 	{
 		switch(current_state)
 		{
 			case SEEKING:
-				printf("Entering seeking %c\n",*b);
 				if(*b == '\0') current_state = DONE;	
 				int c;
 				for(c=0;c<4;++c)
 				{
 					if(*b == i[c][0])
-				   	{
+					{
 						current_state = TESTING; 
 						printf("%c matches %c from list\n",*b,i[c][0]); 
 						break;
-					}
-					else{
-						++b;
 					}
 				}
 				break;
@@ -64,21 +60,32 @@ command_obj *parse_file_to_data(char *fp)
 					word[_c] = *b;					
 					++b,++_c;
 				}
-				current_state = DONE;
-				for(_d=0;_d<4;++_d)
+				printf("Produced word %s\n",word);
+				int l;
+				for(l = 0; l < 4; ++l)
 				{
-					if(strcmp(i[_d],word) == 0)
+					if(strcmp(word,i[l]) == 0)
 					{
-						printf("Found word match with %s %s\n",i[_d],word);
-						//we now have our word context, process the line.
-
-
+						current_state = FOUND;
+						break;
 					}
-				}
+					else{
+			//			printf("No match between %s %s\n",word,i[l]);
+					}
+				}		
 				break;
 			case FOUND:
 				
-
+				
+				printf("->");
+				while(*b != '\n')
+				{
+					printf("%c",*b);
+					++b;
+				}	
+				printf("\n");
+				++b;
+				current_state = SEEKING;
 				break;
 		}
 
