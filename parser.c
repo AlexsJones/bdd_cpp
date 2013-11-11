@@ -22,10 +22,17 @@
 #include <jnxc_headers/jnxfile.h>
 #include "parser.h"
 typedef enum state{ SEEKING, TESTING, FOUND, DONE } state;
-typedef enum context { GIVEN, WHEN, AND, THEN } context;
+typedef enum context { GIVEN, WHEN, AND, THEN} context;
 char *i[4] = { "Given","When","And","Then" };
 command_obj *parse_file_to_data(char *fp)
 {
+	context current_context = -1;
+	state current_state = SEEKING;	
+	///
+	command_obj *cobj = malloc(sizeof(command_obj));
+	cobj->ac = jnx_list_init();
+	cobj->ac_c = 0;
+	///
 	char *b;
 	size_t rb = jnx_file_read(fp,&b);	
 	if(rb == 0)
@@ -33,8 +40,6 @@ command_obj *parse_file_to_data(char *fp)
 		printf("Unable to read file\n");
 		return NULL;
 	}
-	context current_context = -1;
-	state current_state = SEEKING;	
 	while(current_state != DONE)
 	{
 		switch(current_state)
@@ -73,27 +78,42 @@ command_obj *parse_file_to_data(char *fp)
 						break;
 					}
 					else{
-			//			printf("No match between %s %s\n",word,i[l]);
+						//			printf("No match between %s %s\n",word,i[l]);
 					}
 				}		
 				break;
 			case FOUND:
 				printf("\n");	
-				char *a = malloc(sizeof(char));
-				int f = 1,g=0;
-				while(*b != '\n')
-				{
-					memcpy(a + (sizeof(char) * g),b,sizeof(char));
-					a = realloc(a,sizeof(char) * f);
-					++b,++f,++g;
-				
-				}++b;
+				char *sp = b;	
+				int _l = 0;
+				while(*sp != '\n') ++_l,++sp;	
+				char *a = malloc(sizeof(char) *_l);
+				memcpy(a,b,sizeof(char) * _l);	
+				//b pointer has been increased to be further down the array, off the line and onto the next
+				b = b + _l +1;
 				printf("-> %s\n",a);
-				
+
+				switch(current_context)
+				{
+					case GIVEN:
+						cobj->gc = a;
+						break;
+					case WHEN:
+						cobj->wc = a;
+						break;
+					case AND:
+						cobj->ac_c++;
+						jnx_list_add(cobj->ac,a);
+						break;
+					case THEN:
+						cobj->tc = a;
+						break;
+				}
 				current_state = SEEKING;
 				break;
 		}
 
 
 	}
+	return cobj;
 }
