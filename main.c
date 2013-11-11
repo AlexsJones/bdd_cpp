@@ -37,6 +37,9 @@ int main(int argc, char **argv)
 					printf("AND -> %s\n",jnx_list_remove(&o->ac));
 				printf("THEN -> %s\n",o->tc);	
 				printf("---------------------------\n");
+			
+			
+				command_obj_delete(o);
 				break;
 		}
 	}

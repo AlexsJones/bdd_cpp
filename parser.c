@@ -117,3 +117,18 @@ command_obj *parse_file_to_data(char *fp)
 	}
 	return cobj;
 }
+void command_obj_delete(command_obj *o)
+{
+	free(o->ac);
+	free(o->wc);
+	int c;
+	jnx_node *h = o->ac->head;
+	while(h)
+	{
+		free(h->_data);
+		h = h->next_node;
+	}
+
+	free(o->tc);
+	free(o);
+}

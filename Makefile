@@ -1,2 +1,2 @@
 all:
-	gcc *.c -o bdd++ -ljnxc
+	gcc *.c -o bdd++ -ljnxc -g

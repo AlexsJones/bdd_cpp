@@ -26,4 +26,5 @@ typedef struct command_obj{
 	char *tc;
 }command_obj;
 command_obj *parse_file_to_data(char *fp);
+void command_obj_delete(command_obj *o);
 #endif
