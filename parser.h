@@ -17,6 +17,7 @@
  */
 #ifndef __PARSER_H__
 #define __PARSER_H__
+#include <jnxc_headers/jnxhash.h>
 #include <jnxc_headers/jnxlist.h>
-void parse_file_to_data(char *fp);
+jnx_hashmap* parse_file_to_data(char *fp);
 #endif

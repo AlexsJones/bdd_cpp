@@ -26,6 +26,7 @@ char *i[6] = { "Feature","Scenario","Given","When","And","Then" };
 jnx_hashmap *gherkinmap = NULL;
 void write_data(int context,char *str)
 {
+	jnx_hashmap *gherkinmap = NULL;
 	if(gherkinmap == NULL)
 	{
 		gherkinmap = jnx_hash_init(1024);
@@ -38,9 +39,10 @@ void write_data(int context,char *str)
 	}
 	else
 	{
-		int l = strlen(stored) + strlen(str);
+		int l = strlen(stored) + strlen(str) +1;
 		char *stored_string = malloc(sizeof(char)*l);
 		strcpy(stored_string,stored);
+		strcat(stored_string," ");
 		strcat(stored_string,str);
 		free(str);
 		free(stored);
@@ -65,14 +67,14 @@ void scan_lines(jnx_list *l)
 			l->head = l->head->next_node;
 	}
 }
-void parse_file_to_data(char *fp)
+jnx_hashmap* parse_file_to_data(char *fp)
 {
 	char *b;
 	size_t rb = jnx_file_read(fp,&b);	
 	if(rb == 0)
 	{
 		printf("Unable to read file\n");
-		return;
+		return NULL;
 	}
 	char *s = strdup(b);
 	jnx_list *lines = jnx_list_init();
@@ -93,5 +95,5 @@ void parse_file_to_data(char *fp)
 		++s;	
 	}	
 	scan_lines(lines);
-
+	return gherkinmap;
 }

@@ -28,7 +28,11 @@ int main(int argc, char **argv)
 		{
 			case 'f':
 				printf("Input file %s\n",optarg);
-				parse_file_to_data(optarg);	
+				jnx_hashmap *h;
+			   	if((h= parse_file_to_data(optarg)) == NULL)
+				{
+					return 1;
+				}	
 				break;
 		}
 	}
