@@ -18,13 +18,5 @@
 #ifndef __PARSER_H__
 #define __PARSER_H__
 #include <jnxc_headers/jnxlist.h>
-typedef struct command_obj{
-	char *gc;
-	char *wc;
-	jnx_list *ac;
-	int ac_c;
-	char *tc;
-}command_obj;
-command_obj *parse_file_to_data(char *fp);
-void command_obj_delete(command_obj *o);
+void parse_file_to_data(char *fp);
 #endif

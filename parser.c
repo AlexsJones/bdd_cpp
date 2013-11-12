@@ -22,7 +22,7 @@
 #include <jnxc_headers/jnxfile.h>
 #include "parser.h"
 char *i[6] = { "Feature","Scenario","Given","When","And","Then" };
-void scan_lines(jnx_list *l,command_obj **obj)
+void scan_lines(jnx_list *l)
 {
 	jnx_node *h = l->head;
 	int current_context = -1;
@@ -40,19 +40,14 @@ void scan_lines(jnx_list *l,command_obj **obj)
 		l->head = l->head->next_node;
 	}
 }
-command_obj *parse_file_to_data(char *fp)
+void parse_file_to_data(char *fp)
 {
-	///
-	command_obj *cobj = malloc(sizeof(command_obj));
-	cobj->ac = jnx_list_init();
-	cobj->ac_c = 0;
-	///
 	char *b;
 	size_t rb = jnx_file_read(fp,&b);	
 	if(rb == 0)
 	{
 		printf("Unable to read file\n");
-		return NULL;
+		return;
 	}
 	char *s = strdup(b);
 	jnx_list *lines = jnx_list_init();
@@ -72,22 +67,6 @@ command_obj *parse_file_to_data(char *fp)
 		}
 		++s;	
 	}	
-	scan_lines(lines,&cobj);
+	scan_lines(lines);
 
-	return cobj;
-}
-void command_obj_delete(command_obj *o)
-{
-	free(o->gc);
-	free(o->wc);
-	int c;
-	jnx_node *h = o->ac->head;
-	while(h)
-	{
-		free(h->_data);
-		h = h->next_node;
-	}
-	jnx_list_delete(&o->ac);
-	free(o->tc);
-	free(o);
 }
