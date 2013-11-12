@@ -26,7 +26,6 @@ char *i[6] = { "Feature","Scenario","Given","When","And","Then" };
 jnx_hashmap *gherkinmap = NULL;
 void write_data(int context,char *str)
 {
-	jnx_hashmap *gherkinmap = NULL;
 	if(gherkinmap == NULL)
 	{
 		gherkinmap = jnx_hash_init(1024);
