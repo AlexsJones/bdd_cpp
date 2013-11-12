@@ -47,13 +47,13 @@ int main(int argc, char **argv)
 				printf("THEN -> %s\n",o->tc);	
 				printf("---------------------------\n");
 		
-				template_from_commands(o);	
+			//	template_from_commands(o);	
 			
 				command_obj_delete(o);
 				break;
 		}
 	}
 
-
 	return 0;
 }
+

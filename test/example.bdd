@@ -1,3 +1,7 @@
+Feature: As a business I want to discover just how versitile
+the game engine is
+
+Scenario: Testing the game launch sequence
 Given I am in Debug mode
 When the game has started
 And I am sitting comfortably

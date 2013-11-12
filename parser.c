@@ -21,13 +21,27 @@
 #include <strings.h>
 #include <jnxc_headers/jnxfile.h>
 #include "parser.h"
-typedef enum state{ SEEKING, TESTING, FOUND, DONE } state;
-typedef enum context { GIVEN, WHEN, AND, THEN } context;
-char *i[4] = { "Given","When","And","Then" };
+char *i[6] = { "Feature","Scenario","Given","When","And","Then" };
+void scan_lines(jnx_list *l,command_obj **obj)
+{
+	jnx_node *h = l->head;
+	int current_context = -1;
+	while(l->head)
+	{
+		char *cl = l->head->_data;
+		int c;
+		for(c=0;c<6;++c)
+			if(strstr(cl,i[c]))
+		   	{
+			   	current_context=c;
+		   	}
+		
+			printf("Processing line with context %d->%s\n",current_context,cl);
+		l->head = l->head->next_node;
+	}
+}
 command_obj *parse_file_to_data(char *fp)
 {
-	context current_context = -1;
-	state current_state = SEEKING;	
 	///
 	command_obj *cobj = malloc(sizeof(command_obj));
 	cobj->ac = jnx_list_init();
@@ -40,76 +54,26 @@ command_obj *parse_file_to_data(char *fp)
 		printf("Unable to read file\n");
 		return NULL;
 	}
-	while(current_state != DONE)
+	char *s = strdup(b);
+	jnx_list *lines = jnx_list_init();
+	while(*s != '\0')
 	{
-		switch(current_state)
+		char line[256];
+		bzero(line,256);
+		int linelen = 0;
+		while(*s != '\n')
 		{
-			case SEEKING:
-				if(*b == '\0') current_state = DONE;	
-				int c;
-				for(c=0;c<4;++c)
-				{
-					if(*b == i[c][0])
-					{
-						current_state = TESTING; 
-						printf("%c matches %c from list\n",*b,i[c][0]); 
-						break;
-					}
-				}
-				break;
-			case TESTING:
-				printf("Entering testing %c\n",*b);
-				char word[sizeof(char) * 6];
-				bzero(word,sizeof(char)* 6);
-				int _c=0,_d;
-				while(*b != ' ')
-				{
-					word[_c] = *b;					
-					++b,++_c;
-				}
-				printf("Produced word %s\n",word);
-				int l;
-				for(l = 0; l < 4; ++l)
-				{
-					if(strcmp(word,i[l]) == 0)
-					{
-						current_state = FOUND;
-						current_context = l;
-						break;
-					}
-					else{
-						//			printf("No match between %s %s\n",word,i[l]);
-					}
-				}		
-				break;
-			case FOUND:
-				printf("\n");	
-				char *sp = b;	
-				int _l = 0;
-				while(*sp != '\n') ++_l,++sp;
-				char *a = malloc(sizeof(char) *_l);
-				memcpy(a,b,sizeof(char) * _l);	
-				b = b + _l +1;
-				switch(current_context)
-				{
-					case GIVEN:
-						cobj->gc = a;
-						break;
-					case WHEN:
-						cobj->wc = a;
-						break;
-					case AND:
-						cobj->ac_c++;
-						jnx_list_add(cobj->ac,a);
-						break;
-					case THEN:
-						cobj->tc = a;
-						break;
-				}
-				current_state = SEEKING;
-				break;
+			line[linelen] = *s;
+			++s,++linelen;
 		}
-	}
+		if(strcmp(line,"") != 0)
+		{
+			jnx_list_add(lines,strdup(line));
+		}
+		++s;	
+	}	
+	scan_lines(lines,&cobj);
+
 	return cobj;
 }
 void command_obj_delete(command_obj *o)
