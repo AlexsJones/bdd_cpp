@@ -20,8 +20,34 @@
 #include <string.h>
 #include <strings.h>
 #include <jnxc_headers/jnxfile.h>
+#include <jnxc_headers/jnxhash.h>
 #include "parser.h"
 char *i[6] = { "Feature","Scenario","Given","When","And","Then" };
+jnx_hashmap *gherkinmap = NULL;
+void write_data(int context,char *str)
+{
+	if(gherkinmap == NULL)
+	{
+		gherkinmap = jnx_hash_init(1024);
+	}
+	char *stored = jnx_hash_get(gherkinmap,i[context]);
+	if(!stored)
+	{
+		printf("Storing for first time in hashmap [%s][%s]\n",i[context],str);
+		jnx_hash_put(gherkinmap,i[context],str);
+	}
+	else
+	{
+		int l = strlen(stored) + strlen(str);
+		char *stored_string = malloc(sizeof(char)*l);
+		strcpy(stored_string,stored);
+		strcat(stored_string,str);
+		free(str);
+		free(stored);
+		printf("Writing to hashmap [%s][%s]\n",i[context],stored_string);
+		jnx_hash_put(gherkinmap,i[context],stored_string);
+	}
+}
 void scan_lines(jnx_list *l)
 {
 	jnx_node *h = l->head;
@@ -35,9 +61,8 @@ void scan_lines(jnx_list *l)
 		   	{
 			   	current_context=c;
 		   	}
-		
-			printf("Processing line with context %d->%s\n",current_context,cl);
-		l->head = l->head->next_node;
+			write_data(current_context,cl);
+			l->head = l->head->next_node;
 	}
 }
 void parse_file_to_data(char *fp)
