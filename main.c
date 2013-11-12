@@ -19,6 +19,7 @@
 #include <getopt.h>
 #include <stdio.h>
 #include "parser.h"
+#include "scribe.h"
 int main(int argc, char **argv)
 {
 	int i,c;
@@ -32,7 +33,8 @@ int main(int argc, char **argv)
 			   	if((h= parse_file_to_data(optarg)) == NULL)
 				{
 					return 1;
-				}	
+				}
+				scribe_new(h);	
 				break;
 		}
 	}
