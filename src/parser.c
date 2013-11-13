@@ -79,6 +79,7 @@ void write_data(int global_context,char *str)
 		feature_component *f = malloc(sizeof(feature_component));
 		f->name = key;
 		f->str = value;
+		f->context = global_context;
 		jnx_list_add(components,f);
 	}
 }

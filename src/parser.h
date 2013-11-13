@@ -21,8 +21,9 @@
 #include <jnxc_headers/jnxlist.h>
 typedef struct
 {
- char *name;
- char *str;
+ 	int context;
+	char *name;
+	char *str;
 }feature_component;
 jnx_list* parse_file_to_data(char *fp);
 #endif

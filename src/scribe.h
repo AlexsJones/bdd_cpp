@@ -17,8 +17,8 @@
  */
 #ifndef __SCRIBE_H__
 #define __SCRIBE_H__
-#include <jnxc_headers/jnxhash.h>
+#include <jnxc_headers/jnxlist.h>
 
-void scribe_new(jnx_hashmap *h);
+void scribe_new(jnx_list *h);
 
 #endif

@@ -34,18 +34,7 @@ int main(int argc, char **argv)
 				{
 					return 1;
 				}
-
-				jnx_node *r = h->head;
-
-				while(h->head)
-				{
-					feature_component *f = h->head->_data;	
-					printf("[%s]%s\n",f->name,f->str);
-					
-					h->head = h->head->next_node;
-				}
-
-
+				scribe_new(h);
 				break;
 		}
 	}
