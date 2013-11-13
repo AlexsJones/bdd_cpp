@@ -40,8 +40,14 @@ int dir_exists(char *dir)
 int feature_walk(const char *fpath, const struct stat *sb, int typeflag, struct FTW *ftwbuf)
 {
 	printf("Found %s\n",fpath);
+	struct stat t;
+	int e = stat(fpath,&t);
+	if(e == -1) { return 1;}
+	if(!S_ISDIR(t.st_mode)){
 	jnx_list *feature_contents = parse_file_to_data((char*)fpath);
 	scribe_new(feature_contents,(char*)fpath);
+	}	
+	return 0;
 }
 void filesys_steps_from_features()
 {

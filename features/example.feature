@@ -1,8 +1,6 @@
-Feature: Example of game story feature
+Feature: This is another feature
 
-Scenario: I want to test the homepage
-Given I am on the dashboard
-When I click homepage button
-And wait for 5 seconds
-And don't press anything
-Then the homepage will appear
+Scenario: I test pickle
+Given I run pickle
+When I start pickle
+Then it creates step definitions for me

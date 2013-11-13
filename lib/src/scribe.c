@@ -105,6 +105,7 @@ void scribe_new(jnx_list *h,char *f)
 {
 
 	char *featurefilename = create_feature_name(f);
+	printf("scribe_new feature file name %s\n",featurefilename);
 	purge_existing(featurefilename);
 	
 	jnx_node *r = h->head;
