@@ -1,3 +1,4 @@
+step_definitions
 template
 *.cpp
-bdd++
+pickle

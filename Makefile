@@ -1,2 +1,2 @@
 all:
-	gcc src/*.c -o bdd -ljnxc -g
+	gcc lib/src/*.c -o pickle -ljnxc -g

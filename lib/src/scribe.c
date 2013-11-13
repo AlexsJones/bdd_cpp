@@ -22,9 +22,8 @@
 #include "parser.h"
 #include "scribe.h"
 #include <jnxc_headers/jnxfile.h>
-
-#define TEMPLATEPATH "template/template.c"
-
+#include <jnxc_headers/jnxhash.h>
+extern jnx_hashmap *configuration;
 #define HEADER "/*\n\
 *=====================================================================================\n\
 *\n\
@@ -69,10 +68,12 @@ char *scribe_write_method(char *name)
 	sprintf(buffer,METHOD,name);
 	return strdup(buffer);
 }
-size_t write_file(char *str)
+size_t write_file(char *str,char *path)
 {
+	
+	
 	FILE* fp;
-	if ((fp = fopen(TEMPLATEPATH, "a")) == NULL) {
+	if ((fp = fopen(path, "a")) == NULL) {
 		perror("file: ");
 		return -1;
 	}
@@ -80,19 +81,32 @@ size_t write_file(char *str)
 	fclose(fp);
 	return size;
 }
-void purge_existing()
+void purge_existing(char *path)
 {
 	FILE *fp;
-	if((fp = fopen(TEMPLATEPATH,"r")) != NULL)
+	if((fp = fopen(path,"r")) != NULL)
 	{
 		fclose(fp);
-		remove(TEMPLATEPATH);
+		remove(path);
 	}
 }
-void scribe_new(jnx_list *h)
+char *create_feature_name(char *f)
 {
-	purge_existing();
+	char *pch = strtok(f,".");
+	strsep(&pch,"/");
+	char buffer [256];
+	strcpy(buffer,jnx_hash_get(configuration,"STEPPATH"));
+	strcat(buffer,"/");
+	strcat(buffer,pch);
+	strcat(buffer,".c");
+	return strdup(buffer);
+}
+void scribe_new(jnx_list *h,char *f)
+{
 
+	char *featurefilename = create_feature_name(f);
+	purge_existing(featurefilename);
+	
 	jnx_node *r = h->head;
 	jnx_list *methodsl = jnx_list_init();
 	char *filename=NULL,*desc=NULL;
@@ -119,7 +133,7 @@ void scribe_new(jnx_list *h)
 	
 	char *_header = scribe_write_header(filename,desc);
 	//write header
-	write_file(_header);
+	write_file(_header,featurefilename);
 	printf("Wrote header...\n");
 	free(filename);
 	free(desc);
@@ -131,7 +145,7 @@ void scribe_new(jnx_list *h)
 		
 		char buffer[512];
 		sprintf(buffer,METHOD,f->str);
-		write_file(remove_empty_spaces(buffer));	
+		write_file(remove_empty_spaces(buffer),featurefilename);	
 		free(f->str);
 		printf("Wrote function...\n");	
 		free(f);
@@ -139,5 +153,5 @@ void scribe_new(jnx_list *h)
 	}
 	jnx_list_delete(&methodsl);
 	printf("Scribe done!\n");
-	printf("Output available at %s\n",TEMPLATEPATH);
+	printf("Output available at %s\n",featurefilename);
 }

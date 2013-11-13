@@ -1,24 +1,23 @@
 /*
  * =====================================================================================
  *
- *       Filename:  scribe.h
+ *       Filename:  filesys.h
  *
- *    Description:  
+ *    Description:  controls local file operations
  *
  *        Version:  1.0
- *        Created:  11/12/13 17:58:21
+ *        Created:  11/13/13 18:10:44
  *       Revision:  none
  *       Compiler:  gcc
  *
- *         Author:  YOUR NAME (), 
+ *         Author:  jonesax@hush.com
  *   Organization:  
  *
  * =====================================================================================
  */
-#ifndef __SCRIBE_H__
-#define __SCRIBE_H__
-#include <jnxc_headers/jnxlist.h>
-
-void scribe_new(jnx_list *h);
-
+#ifndef __FILESYS_H__
+#define __FILESYS_H__
+#include "parser.h"
+#include "scribe.h"
+void filesys_steps_from_features();
 #endif
