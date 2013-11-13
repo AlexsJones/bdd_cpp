@@ -29,12 +29,23 @@ int main(int argc, char **argv)
 		{
 			case 'f':
 				printf("Input file %s\n",optarg);
-				jnx_hashmap *h;
+				jnx_list *h;
 			   	if((h= parse_file_to_data(optarg)) == NULL)
 				{
 					return 1;
 				}
-				scribe_new(h);	
+
+				jnx_node *r = h->head;
+
+				while(h->head)
+				{
+					feature_component *f = h->head->_data;	
+					printf("[%s]%s\n",f->name,f->str);
+					
+					h->head = h->head->next_node;
+				}
+
+
 				break;
 		}
 	}

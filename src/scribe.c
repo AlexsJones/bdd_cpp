@@ -28,15 +28,14 @@
  *   	 %s  \n\
  *\n\
  *        Version:  1.0\n\
- *        Created:  %s\n\
- *       Revision:  none\n\
+ *        Created:  %s\
  *       Compiler:  gcc\n\
  *\n\
  *         Author:  ANON, \n\
- *   Organization:  \n\
  *\n\
  * =====================================================================================\n\
  */\n"
+#define METHOD "int %s(scenario *s)\n{\n\n};\n"
 char *scribe_write_header(char *filename,char *desc)
 {
 	char *s = malloc(sizeof(char) * (strlen(HEADER) + strlen(filename)));
@@ -46,10 +45,33 @@ char *scribe_write_header(char *filename,char *desc)
 	sprintf(s,HEADER,filename,desc,createtime);
 	return s;
 }
-void scribe_new(jnx_hashmap *h)
+char *remove_empty_spaces(char *s)
 {
+	int c = 0;
+	while(s[c] != '\0')
+	{
+		if(s[c] == ' ')
+		{
+			s[c] = '_';
+		}	
+		++c;
+	}
+	return s;
+}
+char *scribe_write_method(char *name)
+{
+	char buffer[512];
+	sprintf(buffer,METHOD,name);
+	return strdup(buffer);
+}
+void scribe_new(jnx_hashmap *h)
+{	
 	printf("Scribing new file\n");
+	char *_header = scribe_write_header(jnx_hash_get(h,"Feature"),jnx_hash_get(h,"Scenario"));
+		
+	char *_gm = scribe_write_method(jnx_hash_get(h,"Given"));
+	char *_wm = scribe_write_method(jnx_hash_get(h,"When"));
+	char *_tm = scribe_write_method(jnx_hash_get(h,"Then"));
 
-	char *s = scribe_write_header(jnx_hash_get(h,"Feature"),jnx_hash_get(h,"Scenario"));
-	printf("%s\n",s);
+	printf("%s%s%s%s\n",_header,_gm,_wm,_tm);
 }
