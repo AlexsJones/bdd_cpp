@@ -40,11 +40,11 @@ int dir_exists(char *dir)
 int feature_walk(const char *fpath, const struct stat *sb, int typeflag, struct FTW *ftwbuf)
 {
 
+	jnx_list *feature_contents = NULL;
 	switch(typeflag)
 	{
 		case FTW_F:
-			printf("looking at %s\n",fpath + ftwbuf->base);
-			jnx_list *feature_contents = parse_file_to_data((char*)fpath + ftwbuf->base);
+			feature_contents= parse_file_to_data((char*)fpath + ftwbuf->base);
 			if(feature_contents){
 				scribe_new(feature_contents,(char*)fpath + ftwbuf->base);
 			}
@@ -65,7 +65,6 @@ void filesys_steps_from_features()
 	}
 	if(dir_exists(featurepath))
 	{
-		printf("Peeking into feature path\n");
 		nftw(featurepath,feature_walk,atoi(jnx_hash_get(configuration,"FTWDEPTH")),FTW_DEPTH | FTW_SL);
 	}
 }

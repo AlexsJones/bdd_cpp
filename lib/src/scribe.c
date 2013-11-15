@@ -42,7 +42,6 @@ extern jnx_hashmap *configuration;
 #define METHOD "int %s(scenario *s)\n{\n\n};\n"
 char *scribe_write_header(char *filename,char *desc)
 {
-	printf("scribe_write_header\n");
 	char *s = malloc(sizeof(char) * (strlen(HEADER) + strlen(filename)));
 	time_t t;
 	time(&t);
@@ -106,7 +105,6 @@ char *create_feature_name(char *f)
 void scribe_new(jnx_list *h,char *f)
 {
 	char *stepfilename = create_feature_name(f);
-	printf("scribe_new feature file name %s\n",stepfilename);
 	purge_existing(stepfilename);
 	jnx_node *r = h->head;
 	jnx_list *methodsl = jnx_list_init();
@@ -130,12 +128,9 @@ void scribe_new(jnx_list *h,char *f)
 		}
 		h->head = h->head->next_node;
 	}
-	printf("%s %s\n",filename,desc);
-	
 	char *_header = scribe_write_header(filename,desc);
 	//write header
 	write_file(_header,stepfilename);
-	printf("Wrote header...\n");
 	free(filename);
 	free(desc);
 	jnx_list_delete(&h);
@@ -148,11 +143,8 @@ void scribe_new(jnx_list *h,char *f)
 		sprintf(buffer,METHOD,f->str);
 		write_file(remove_empty_spaces(buffer),stepfilename);	
 		free(f->str);
-		printf("Wrote function...\n");	
 		free(f);
 		methodsl->head = methodsl->head->next_node;
 	}
 	jnx_list_delete(&methodsl);
-	printf("Scribe done!\n");
-	printf("Output available at %s\n",stepfilename);
 }

@@ -19,8 +19,11 @@
 #include <getopt.h>
 #include <jnxc_headers/jnxlist.h>
 #include <jnxc_headers/jnxfile.h>
+#include <jnxc_headers/jnxterm.h>
+#include <unistd.h>
 #include <stdio.h>
 #include "filesys.h"
+#define PAUSE sleep(1);
 #define CONFIGURATION "lib/conf/settings.conf"
 jnx_hashmap *configuration = NULL;
 void usage()
@@ -54,22 +57,13 @@ int main(int argc, char **argv)
 		{
 			case 'g':
 				printf("Generating step definition templates\n");
-	
+				jnx_term_load_spinner(1);	
 				filesys_steps_from_features();
-	
+				PAUSE
+				jnx_term_load_spinner(0);
 				break;
 		}
 	}
-
-	/*  
-	jnx_list *h;
-	if((h= parse_file_to_data(optarg)) == NULL)
-	{
-		return 1;
-	}
-	scribe_new(h);
-*/
-
 
 	return 0;
 }

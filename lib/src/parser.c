@@ -56,7 +56,7 @@ void append_to_existing(char *key, char *value)
 			strcat(s,value);
 			free(f->str);
 			f->str = s;		
-		
+
 			components->head = h;
 			return;
 		}
@@ -117,7 +117,6 @@ void scan_lines(jnx_list *l)
 }
 jnx_list* parse_file_to_data(char *fp)
 {
-	printf("starting parse_file_to_data: %s\n",fp);
 	if(components != NULL)
 	{
 		jnx_list_delete(&components);
@@ -129,11 +128,8 @@ jnx_list* parse_file_to_data(char *fp)
 		printf("Unable to read file\n");
 		return NULL;
 	}
-	printf("1\n");
 	char *s = strdup(b);
-	printf("2\n");
 	free(b);
-	printf("3\n");
 	jnx_list *lines = jnx_list_init();
 	while(*s != '\0')
 	{
@@ -153,6 +149,5 @@ jnx_list* parse_file_to_data(char *fp)
 	}	
 	scan_lines(lines);
 	jnx_list_delete(&lines);
-	printf("4\n");
 	return components;
 }
