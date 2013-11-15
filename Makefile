@@ -1,7 +1,6 @@
+all:
+	gcc lib/src/*.c -o pickle -ljnxc -g 
 increment:
 	./lib/scripts/inc
-all:
-	gcc lib/src/*.c -o pickle -ljnxc -g
 install:
-	echo "Done"
-
+	sudo cp pickle /usr/bin
