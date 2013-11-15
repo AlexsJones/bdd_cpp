@@ -25,20 +25,11 @@ increment_version ()
   echo -e "${new// /.}"
 } 
 
-path=$1
 
-
-v=""
-
-cat $path | while IFS='' read -r LINE
+cat "lib/conf/version" | while IFS='' read -r LINE
 do
-	if contains $LINE "VERSION"
-	then
-		OLDIFS=IFS
-		IFS="="
-		read -a array <<< "$(printf "%s" "$LINE")"
-		IFS=$OLDIFS
-		increment_version ${array[1]}
-	fi
+	newv=`increment_version $LINE`
+	echo "$newv" >> "lib/conf/newversion"
+	mv "lib/conf/newversion" "lib/conf/version"
 done
 
