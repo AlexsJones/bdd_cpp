@@ -1,4 +1,14 @@
 #!/bin/bash
+contains() {
+    string="$1"
+    substring="$2"
+    if test "${string#*$substring}" != "$string"
+    then
+        return 0    # $substring is in $string
+    else
+        return 1    # $substring is not in $string
+    fi
+}
 increment_version ()
 {
   declare -a part=( ${1//\./ } )
@@ -18,8 +28,18 @@ increment_version ()
 path=$1
 
 
-
-
+cat $path | while IFS='' read -r LINE
+do
+	if contains $LINE "VERSION"
+	then
+		var="="
+		OLDIFS=IFS
+		IFS=":"
+		read -a array <<< "$printf "%s" "$var")"
+		IFS=$OLDIFS
+		echo "found -> ${array[1]}"
+	fi
+done
 
 
 
