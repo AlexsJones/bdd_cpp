@@ -10,8 +10,10 @@ Usage
 =====
 
 
-./bdd++ -f test/example.bdd
+pickle -g
 
-Will produce
+//Generates step_definitions in your CWD from features/*
 
-template/template.cpp
+pickle
+
+//Runs tests
