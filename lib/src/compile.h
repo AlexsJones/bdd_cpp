@@ -17,7 +17,9 @@
  */
 #ifndef __COMPILE_H__
 #define __COMPILE_H__
-
+#define REF_FILE_EXT "pickled"
+#define COMPILER "gcc"
+#define DEBUG_FLAGS " -g -lm "
 int compile_test(char *fpath);
 
 #endif

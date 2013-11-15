@@ -23,6 +23,7 @@
 #define __USE_XOPEN_EXTENDED
 #include <ftw.h>
 #include <jnxc_headers/jnxhash.h>
+#include "compile.h"
 extern jnx_hashmap *configuration;
 int dir_exists(char *dir)
 {
@@ -56,7 +57,7 @@ int feature_walk(const char *fpath, const struct stat *sb, int typeflag, struct 
 void filesys_steps_from_features()
 {
 	char *featurepath = jnx_hash_get(configuration,"FEATUREPATH");
-	
+
 	if(!dir_exists(featurepath))
 	{
 		printf("Could not find a /features folder. Sure it exists?\n");
@@ -79,7 +80,14 @@ int step_walk(const char *fpath, const struct stat *sb, int typeflag, struct FTW
 	switch(typeflag)
 	{
 		case FTW_F:
-			printf("%s\n",fpath);
+			if(!strstr(fpath + ftwbuf->base,REF_FILE_EXT))
+			{
+				printf("Test found %s\n",fpath + ftwbuf->base);
+				if(compile_test((char*)fpath + ftwbuf->base) != 0)
+				{
+					printf("Could not find appropriate .pickled file for [%s] object file references\n",fpath+ftwbuf->base);
+				}
+			}
 			break;
 	}
 	return 0;
@@ -93,10 +101,10 @@ void filesys_test_from_steps()
 	}
 	//parse
 	nftw(step_path,step_walk,atoi(jnx_hash_get(configuration,"FTWDEPTH")),FTW_DEPTH | FTW_SL);
-	
+
 	//compile
-	
+
 	//execute
-	
+
 	//return
 }
