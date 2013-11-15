@@ -20,4 +20,5 @@
 #include "parser.h"
 #include "scribe.h"
 void filesys_steps_from_features();
+void filesys_test_from_steps();
 #endif
