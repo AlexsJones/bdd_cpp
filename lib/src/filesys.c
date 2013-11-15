@@ -39,14 +39,18 @@ int dir_exists(char *dir)
 }
 int feature_walk(const char *fpath, const struct stat *sb, int typeflag, struct FTW *ftwbuf)
 {
-	printf("Found %s\n",fpath);
-	struct stat t;
-	int e = stat(fpath,&t);
-	if(e == -1) { return 1;}
-	if(!S_ISDIR(t.st_mode)){
-	jnx_list *feature_contents = parse_file_to_data((char*)fpath);
-	scribe_new(feature_contents,(char*)fpath);
-	}	
+
+	switch(typeflag)
+	{
+		case FTW_F:
+			printf("looking at %s\n",fpath + ftwbuf->base);
+			jnx_list *feature_contents = parse_file_to_data((char*)fpath + ftwbuf->base);
+			if(feature_contents){
+				scribe_new(feature_contents,(char*)fpath + ftwbuf->base);
+			}
+			break;
+	}
+
 	return 0;
 }
 void filesys_steps_from_features()
@@ -62,10 +66,6 @@ void filesys_steps_from_features()
 	if(dir_exists(featurepath))
 	{
 		printf("Peeking into feature path\n");
-
-		if(!nftw(featurepath,feature_walk,atoi(jnx_hash_get(configuration,"FTWDEPTH")),FTW_DEPTH) != 0)
-		{
-			printf("Error with file tree walk - Does features exist and contain files?\n");
-		}
+		nftw(featurepath,feature_walk,atoi(jnx_hash_get(configuration,"FTWDEPTH")),FTW_DEPTH | FTW_SL);
 	}
 }

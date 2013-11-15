@@ -42,10 +42,12 @@ extern jnx_hashmap *configuration;
 #define METHOD "int %s(scenario *s)\n{\n\n};\n"
 char *scribe_write_header(char *filename,char *desc)
 {
+	printf("scribe_write_header\n");
 	char *s = malloc(sizeof(char) * (strlen(HEADER) + strlen(filename)));
 	time_t t;
 	time(&t);
-	char *createtime = ctime(&t);
+	char *createtime = malloc(sizeof(char) * 46);
+	ctime_r(&t,createtime);
 	sprintf(s,HEADER,filename,desc,createtime);
 	return s;
 }
@@ -93,9 +95,9 @@ void purge_existing(char *path)
 char *create_feature_name(char *f)
 {
 	char *pch = strtok(f,".");
-	strsep(&pch,"/");
 	char buffer [256];
-	strcpy(buffer,jnx_hash_get(configuration,"STEPPATH"));
+	strcpy(buffer,"../");
+	strcat(buffer,jnx_hash_get(configuration,"STEPPATH"));
 	strcat(buffer,"/");
 	strcat(buffer,pch);
 	strcat(buffer,".c");
@@ -103,11 +105,9 @@ char *create_feature_name(char *f)
 }
 void scribe_new(jnx_list *h,char *f)
 {
-
-	char *featurefilename = create_feature_name(f);
-	printf("scribe_new feature file name %s\n",featurefilename);
-	purge_existing(featurefilename);
-	
+	char *stepfilename = create_feature_name(f);
+	printf("scribe_new feature file name %s\n",stepfilename);
+	purge_existing(stepfilename);
 	jnx_node *r = h->head;
 	jnx_list *methodsl = jnx_list_init();
 	char *filename=NULL,*desc=NULL;
@@ -134,7 +134,7 @@ void scribe_new(jnx_list *h,char *f)
 	
 	char *_header = scribe_write_header(filename,desc);
 	//write header
-	write_file(_header,featurefilename);
+	write_file(_header,stepfilename);
 	printf("Wrote header...\n");
 	free(filename);
 	free(desc);
@@ -146,7 +146,7 @@ void scribe_new(jnx_list *h,char *f)
 		
 		char buffer[512];
 		sprintf(buffer,METHOD,f->str);
-		write_file(remove_empty_spaces(buffer),featurefilename);	
+		write_file(remove_empty_spaces(buffer),stepfilename);	
 		free(f->str);
 		printf("Wrote function...\n");	
 		free(f);
@@ -154,5 +154,5 @@ void scribe_new(jnx_list *h,char *f)
 	}
 	jnx_list_delete(&methodsl);
 	printf("Scribe done!\n");
-	printf("Output available at %s\n",featurefilename);
+	printf("Output available at %s\n",stepfilename);
 }
