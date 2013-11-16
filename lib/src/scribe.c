@@ -39,7 +39,7 @@ extern jnx_hashmap *configuration;
 *\n\
 * =====================================================================================\n\
 */\n"
-#define METHOD "int %s(scenario *s)\n{\n\n};\n"
+#define METHOD "int %s(void)\n{\n\n};\n"
 char *scribe_write_header(char *filename,char *desc)
 {
 	char *s = malloc(sizeof(char) * (strlen(HEADER) + strlen(filename)));

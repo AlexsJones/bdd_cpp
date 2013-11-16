@@ -51,7 +51,6 @@ int feature_walk(const char *fpath, const struct stat *sb, int typeflag, struct 
 			}
 			break;
 	}
-
 	return 0;
 }
 void filesys_steps_from_features()
@@ -63,16 +62,23 @@ void filesys_steps_from_features()
 		printf("Could not find a /features folder. Sure it exists?\n");
 		return;
 	}
-
-	if(!dir_exists(jnx_hash_get(configuration,"STEPPATH")))
+	if(dir_exists(jnx_hash_get(configuration,"STEPPATH")))
 	{
+
+		printf("step_definitions already exist - Overwrite?[Y/N]\n");
+		char c = getchar();
+		if(c == 'Y' || c == 'y'){
+			nftw(featurepath,feature_walk,atoi(jnx_hash_get(configuration,"FTWDEPTH")),FTW_DEPTH | FTW_SL);
+		}
+		else{
+			printf("Ignoring\n");
+		}
+
+	}else{
 		int d = mkdir(jnx_hash_get(configuration,"STEPPATH"),S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 		if(d == 0) { printf("Created new step_definitions directory\n");
+			nftw(featurepath,feature_walk,atoi(jnx_hash_get(configuration,"FTWDEPTH")),FTW_DEPTH | FTW_SL);
 		}
-	}
-	if(dir_exists(featurepath))
-	{
-		nftw(featurepath,feature_walk,atoi(jnx_hash_get(configuration,"FTWDEPTH")),FTW_DEPTH | FTW_SL);
 	}
 }
 int step_walk(const char *fpath, const struct stat *sb, int typeflag, struct FTW *ftwbuf)

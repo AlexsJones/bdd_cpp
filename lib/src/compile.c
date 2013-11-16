@@ -53,27 +53,27 @@ static char *build_string(char *fpath,char *obj_references)
 	strcat(b,obj_references);
 	strcat(b," ");
 	strcat(b,"-o");
+	//filename
+	strcat(b," ");
+	strcat(b,"test_");
+	strcat(b,fpath);
 	return b;
 }
 int compile_test(char *fpath)
 {
-	printf("compile_test\n");
 	char *ref_path;
 	if((ref_path = ref_exists(strdup(fpath))) == NULL)
 	{
 		return 1;
 	}
-	printf("Found references\n");
 	char *refstr;
 	size_t s = jnx_file_read(ref_path,&refstr);
 	free(ref_path);
-	
 	char *out = build_string(fpath,refstr);
 	free(refstr);
 
 	printf("build string : %s\n",out);
 	//compile recursively with pickle.cmp
-	
-
+	free(out);	
 	return 0;
 }
