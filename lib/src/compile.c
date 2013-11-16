@@ -22,43 +22,56 @@
 #include <stdio.h>
 #include "compile.h"
 #include <jnxc_headers/jnxfile.h>
-char *ref_exists(char *fpath)
+static char *ref_exists(char *fpath)
 {
 
 	char *buffer = malloc(sizeof(char) *1024);
 	char *pch = strtok(fpath,".");	
 
+	//RESET AFTER TOK ! ! ! TODO
 	strcpy(buffer,pch);
 	strcat(buffer,".");
 	strcat(buffer,REF_FILE_EXT);
 	printf("%s\n",buffer);
-
 	struct stat t;
-
 	int status = stat(buffer,&t);
 	if(status != -1)
 	{
 		return buffer;
 	}
 	free(buffer);
+	free(fpath);
 	return NULL;
+}
+static char *build_string(char *fpath,char *obj_references)
+{
+	char *b = malloc(sizeof(char) * 2048);
+	strcpy(b,COMPILER);
+	strcat(b," ");
+	strcat(b,fpath);
+	strcat(b," ");
+	strcat(b,obj_references);
+	strcat(b," ");
+	strcat(b,"-o");
+	return b;
 }
 int compile_test(char *fpath)
 {
 	printf("compile_test\n");
 	char *ref_path;
-	if((ref_path = ref_exists(fpath)) == NULL)
+	if((ref_path = ref_exists(strdup(fpath))) == NULL)
 	{
 		return 1;
 	}
 	printf("Found references\n");
-
 	char *refstr;
 	size_t s = jnx_file_read(ref_path,&refstr);
 	free(ref_path);
-	printf("%s\n",refstr);
-	//look step_definitions for pickle.cmp for .c implementation file path references
 	
+	char *out = build_string(fpath,refstr);
+	free(refstr);
+
+	printf("build string : %s\n",out);
 	//compile recursively with pickle.cmp
 	
 

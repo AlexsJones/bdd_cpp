@@ -103,7 +103,7 @@ void scan_lines(jnx_list *l)
 	{
 		char *cl = l->head->_data;
 
-		int context = get_context(cl);	
+		register int context = get_context(cl);	
 		if(context != -1)
 		{
 			if(context != global_context)
@@ -135,7 +135,7 @@ jnx_list* parse_file_to_data(char *fp)
 	{
 		char line[256];
 		bzero(line,256);
-		int linelen = 0;
+		register int linelen = 0;
 		while(*s != '\n')
 		{
 			line[linelen] = *s;

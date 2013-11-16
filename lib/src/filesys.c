@@ -25,7 +25,7 @@
 #include <jnxc_headers/jnxhash.h>
 #include "compile.h"
 extern jnx_hashmap *configuration;
-int dir_exists(char *dir)
+static int dir_exists(char *dir)
 {
 	struct stat t;
 	int status = stat(dir,&t);
