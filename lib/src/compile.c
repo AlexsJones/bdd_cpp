@@ -22,26 +22,26 @@
 #include <stdio.h>
 #include "compile.h"
 #include <jnxc_headers/jnxfile.h>
-static char *ref_exists(char *fpath)
+#include <jnxc_headers/jnxterm.h>
+static char *get_ref_path(char *fpath)
 {
 
 	char *buffer = malloc(sizeof(char) *1024);
 	char *pch = strtok(fpath,".");	
-
-	//RESET AFTER TOK ! ! ! TODO
 	strcpy(buffer,pch);
 	strcat(buffer,".");
 	strcat(buffer,REF_FILE_EXT);
-	printf("%s\n",buffer);
+	return buffer;
+}
+int file_exists(char *f)
+{
 	struct stat t;
-	int status = stat(buffer,&t);
-	if(status != -1)
+	if(stat(f,&t) != -1)
 	{
-		return buffer;
+		return 1;
+	}else{
+		return 0;
 	}
-	free(buffer);
-	free(fpath);
-	return NULL;
 }
 static char *build_string(char *fpath,char *obj_references)
 {
@@ -53,27 +53,26 @@ static char *build_string(char *fpath,char *obj_references)
 	strcat(b,obj_references);
 	strcat(b," ");
 	strcat(b,"-o");
-	//filename
 	strcat(b," ");
 	strcat(b,"test_");
+	strtok(fpath,".");
 	strcat(b,fpath);
 	return b;
 }
 int compile_test(char *fpath)
 {
-	char *ref_path;
-	if((ref_path = ref_exists(strdup(fpath))) == NULL)
+	char *ref_path = get_ref_path(strdup(fpath));
+	if(!file_exists(ref_path))
 	{
-		return 1;
+		printf("missing .pickled file for %s\n",ref_path);
+		jnx_term_printf_in_color(JNX_COL_RED,"Ignoring test for %s\n",fpath);
+		jnx_term_default();
 	}
-	char *refstr;
-	size_t s = jnx_file_read(ref_path,&refstr);
+	else{
+		char *out = build_string(fpath,ref_path);
+		printf("%s\n",out);
+		free(out);
+	}
 	free(ref_path);
-	char *out = build_string(fpath,refstr);
-	free(refstr);
-
-	printf("build string : %s\n",out);
-	//compile recursively with pickle.cmp
-	free(out);	
 	return 0;
 }
