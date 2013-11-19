@@ -50,7 +50,7 @@ static char *executable_name(char *filename)
 	char *name = strdup(filename);
 	bzero(n,sizeof(char)*512);
 	strncpy(n,"test_",strlen("test_"));
-	strtok(n,".");
+	strtok(name,".");
 	strncat(n,name,strlen(name));
 	free(name);
 	return n;
@@ -71,8 +71,6 @@ static char *build_string(char *fpath,char *obj_references, char *framework_refe
 	strncat(b,"-o",2);
 	strncat(b," ",1);
 	strncat(b,test_exe,strlen(test_exe));
-	strtok(fpath,".");
-	strncat(b,fpath,strlen(fpath));
 	return b;
 }
 int compile_test(char *fpath)
@@ -82,12 +80,13 @@ int compile_test(char *fpath)
 	assert(framework_path);
 	//get test_exe name
 	char *test_exe_name = executable_name(fpath);
-	//check for existing test_exe
+	printf("NAME:  %s\n",test_exe_name);
+
 	if(file_exists(test_exe_name))
 	{
-		printf("exe for %s already exists\n",test_exe_name);
+		printf("Removing defunct binary file\n");
 		remove(test_exe_name);
-	}	
+	}
 	//get the reference path
 	char *ref_path = get_ref_path(strdup(fpath));
 	if(!file_exists(ref_path))
@@ -111,10 +110,10 @@ int compile_test(char *fpath)
 	char *out = build_string(fpath,ref_buffer,framework_path,test_exe_name);
 	printf("-->%s<--\n",out);
 
-	int ret = system(out);
-	free(test_exe_name);
+	//int ret = system(out);
 	free(out);
 	free(ref_buffer);
 	free(ref_path);
+	free(test_exe_name);
 	return 0;
 }
