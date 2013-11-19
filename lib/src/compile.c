@@ -28,9 +28,9 @@ static char *get_ref_path(char *fpath)
 
 	char *buffer = malloc(sizeof(char) *1024);
 	char *pch = strtok(fpath,".");	
-	strcpy(buffer,pch);
-	strcat(buffer,".");
-	strcat(buffer,REF_FILE_EXT);
+	strncpy(buffer,pch,strlen(pch));
+	strncat(buffer,".",1);
+	strncat(buffer,REF_FILE_EXT,strlen(REF_FILE_EXT));
 	return buffer;
 }
 int file_exists(char *f)
@@ -46,17 +46,17 @@ int file_exists(char *f)
 static char *build_string(char *fpath,char *obj_references)
 {
 	char *b = malloc(sizeof(char) * 2048);
-	strcpy(b,COMPILER);
-	strcat(b," ");
-	strcat(b,fpath);
-	strcat(b," ");
-	strcat(b,obj_references);
-	strcat(b," ");
-	strcat(b,"-o");
-	strcat(b," ");
-	strcat(b,"test_");
+	strncpy(b,COMPILER,strlen(COMPILER));
+	strncat(b," ",1);
+	strncat(b,fpath,strlen(fpath));
+	strncat(b," ",1);
+	strncat(b,obj_references,strlen(obj_references));
+	strncat(b," ",1);
+	strncat(b,"-o",2);
+	strncat(b," ",1);
+	strncat(b,"test_",strlen("test_"));
 	strtok(fpath,".");
-	strcat(b,fpath);
+	strncat(b,fpath,strlen(fpath));
 	return b;
 }
 int compile_test(char *fpath)
