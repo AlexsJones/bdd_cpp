@@ -6,6 +6,6 @@ install:
 	cp pickle /usr/bin
 	mkdir -p /usr/share/pickle
 	cp -r lib/framework /usr/share/pickle
-clean:
+uninstall:
 	rm  /usr/bin/pickle
 	rm -rf /usr/share/pickle	

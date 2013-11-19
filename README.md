@@ -7,6 +7,13 @@ make
 
 sudo make install
 
+
+Uninstallation
+=============
+
+sudo make uninstall
+
+
 Usage
 =====
 
