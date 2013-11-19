@@ -25,15 +25,6 @@
 #include <jnxc_headers/jnxfile.h>
 #include <jnxc_headers/jnxterm.h>
 extern jnx_hashmap *configuration;
-static char *get_ref_path(char *fpath)
-{
-	char *buffer = malloc(sizeof(char) *1024);
-	char *pch = strtok(fpath,".");	
-	strncpy(buffer,pch,strlen(pch));
-	strncat(buffer,".",1);
-	strncat(buffer,REF_FILE_EXT,strlen(REF_FILE_EXT));
-	return buffer;
-}
 int file_exists(char *f)
 {
 	struct stat t;
@@ -43,6 +34,32 @@ int file_exists(char *f)
 	}else{
 		return 0;
 	}
+}
+static char *refs(char *test_exe)
+{
+	char *r = malloc(sizeof(char)*256);
+	bzero(r,sizeof(char)*256);
+	strncpy(r,test_exe,strlen(test_exe));
+	strncat(r,".",1);
+	strncat(r,REF_FILE_EXT,strlen(REF_FILE_EXT));
+
+	char *buffer = malloc(sizeof(char)*1024);
+	bzero(buffer,sizeof(char)*1024);
+	if(!file_exists(r))
+	{
+		strncpy(buffer," ",1);
+	}else{
+		char *microbuff;
+		size_t read_bytes = jnx_file_read(r,&microbuff);
+		strncpy(buffer,microbuff,strlen(microbuff));
+				free(microbuff);
+				if(buffer[strlen(buffer) -1] == '\n')
+				{
+					buffer[strlen(buffer) -1] = '\0';
+				}
+	}
+	free(r);
+	return buffer;
 }
 static char *executable_name(char *filename)
 {
@@ -88,32 +105,9 @@ int compile_test(char *fpath)
 		remove(test_exe_name);
 	}
 	//get the reference path
-	char *ref_path = get_ref_path(strdup(fpath));
-	if(!file_exists(ref_path))
-	{
-		//create new .pickled file
-		FILE *fp;
-		if((fp = fopen(ref_path,"w")) == NULL)
-		{
-			return 1;
-		}
-		fclose(fp);
-	}
-	//read from pickled file	
-	char *ref_buffer;
-	size_t o = jnx_file_read(ref_path,&ref_buffer);
-	if(ref_buffer[strlen(ref_buffer) -1] == '\n') 
-	{
-		ref_buffer[strlen(ref_buffer) -1] = '\0';
-	}
-	//create build string
-	char *out = build_string(fpath,ref_buffer,framework_path,test_exe_name);
-	printf("-->%s<--\n",out);
-
-	//int ret = system(out);
-	free(out);
-	free(ref_buffer);
-	free(ref_path);
+	char *r = refs(test_exe_name);	
+	printf("references ->%s<-\n",r);
+	free(r);
 	free(test_exe_name);
 	return 0;
 }
