@@ -38,6 +38,7 @@ int main(int argc, char **argv)
 	jnx_hash_put(configuration,"FEATUREPATH","features");
 	jnx_hash_put(configuration,"FTWDEPTH","8");
 	jnx_hash_put(configuration,"STEPPATH","step_definitions");
+	jnx_hash_put(configuration,"FRAMEWORK","/usr/local/share/pickle/framework");
 	int c;
 	title();
 	for(c=0;c<argc;++c)

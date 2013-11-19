@@ -26,10 +26,10 @@ increment_version ()
 } 
 
 
-cat "lib/conf/version.h" | while IFS='' read -r LINE
+cat "lib/conf/version" | while IFS='' read -r LINE
 do
 	newv=`increment_version $LINE`
-	echo "$newv" >> "lib/conf/newversion.h"
-	mv "lib/conf/newversion.h" "lib/conf/version.h"
+	echo "$newv" >> "lib/conf/newversion"
+	mv "lib/conf/newversion" "lib/conf/version"
 done
 

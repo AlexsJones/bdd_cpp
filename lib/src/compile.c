@@ -20,12 +20,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include "filesys.h"
 #include "compile.h"
 #include <jnxc_headers/jnxfile.h>
 #include <jnxc_headers/jnxterm.h>
+extern jnx_hashmap *configuration;
 static char *get_ref_path(char *fpath)
 {
-
 	char *buffer = malloc(sizeof(char) *1024);
 	char *pch = strtok(fpath,".");	
 	strncpy(buffer,pch,strlen(pch));
@@ -43,7 +44,7 @@ int file_exists(char *f)
 		return 0;
 	}
 }
-static char *build_string(char *fpath,char *obj_references)
+static char *build_string(char *fpath,char *obj_references, char *framework_references)
 {
 	char *b = malloc(sizeof(char) * 2048);
 	strncpy(b,COMPILER,strlen(COMPILER));
@@ -51,6 +52,9 @@ static char *build_string(char *fpath,char *obj_references)
 	strncat(b,fpath,strlen(fpath));
 	strncat(b," ",1);
 	strncat(b,obj_references,strlen(obj_references));
+	strncat(b," ",1);
+	//framework references
+	strncat(b,framework_references,strlen(framework_references));	
 	strncat(b," ",1);
 	strncat(b,"-o",2);
 	strncat(b," ",1);
@@ -61,17 +65,29 @@ static char *build_string(char *fpath,char *obj_references)
 }
 int compile_test(char *fpath)
 {
+
+	char *framework_path = jnx_hash_get(configuration,"FRAMEWORK");
+	assert(framework_path);
+
 	char *ref_path = get_ref_path(strdup(fpath));
 	if(!file_exists(ref_path))
 	{
-		printf("missing .pickled file for %s\n",ref_path);
+		printf("missing");
+		jnx_term_printf_in_color(JNX_COL_MAGENTA," .pickled ");
+	   	jnx_term_default();
+		printf("file for %s\n",ref_path);
 		jnx_term_printf_in_color(JNX_COL_RED,"Ignoring test for %s\n",fpath);
 		jnx_term_default();
 	}
 	else{
-		char *out = build_string(fpath,ref_path);
+		//references to other files
+		char *ref_buffer;
+		size_t o = jnx_file_read(ref_path,&ref_buffer);
+		//framework_path gets set on system installation
+		char *out = build_string(fpath,ref_buffer,framework_path);
 		printf("%s\n",out);
 		free(out);
+		free(ref_buffer);
 	}
 	free(ref_path);
 	return 0;
