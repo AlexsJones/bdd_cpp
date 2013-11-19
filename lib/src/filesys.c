@@ -88,10 +88,13 @@ int step_walk(const char *fpath, const struct stat *sb, int typeflag, struct FTW
 		case FTW_F:
 			if(!strstr(fpath + ftwbuf->base,REF_FILE_EXT))
 			{
-				printf("Test found %s\n",fpath + ftwbuf->base);
 				if(compile_test((char*)fpath + ftwbuf->base) != 0)
 				{
 					printf("Could not find appropriate .pickled file for [%s] object file references\n",fpath+ftwbuf->base);
+				}
+				else
+				{
+					//run test?
 				}
 			}
 			break;

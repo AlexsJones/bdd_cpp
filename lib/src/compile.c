@@ -47,14 +47,20 @@ int file_exists(char *f)
 static char *build_string(char *fpath,char *obj_references, char *framework_references)
 {
 	char *b = malloc(sizeof(char) * 2048);
+	bzero(b,sizeof(char) * 2048);
 	strncpy(b,COMPILER,strlen(COMPILER));
 	strncat(b," ",1);
+	printf("1 : %s\n",b);
 	strncat(b,fpath,strlen(fpath));
+	printf("2 : %s\n",b);
 	strncat(b," ",1);
+	printf("3 : %s\n",b);
 	strncat(b,obj_references,strlen(obj_references));
+	printf("4 : %s\n",b);
 	strncat(b," ",1);
 	//framework references
 	strncat(b,framework_references,strlen(framework_references));	
+	strncat(b,"/*.c",4);
 	strncat(b," ",1);
 	strncat(b,"-o",2);
 	strncat(b," ",1);
@@ -65,30 +71,34 @@ static char *build_string(char *fpath,char *obj_references, char *framework_refe
 }
 int compile_test(char *fpath)
 {
-
 	char *framework_path = jnx_hash_get(configuration,"FRAMEWORK");
 	assert(framework_path);
 
 	char *ref_path = get_ref_path(strdup(fpath));
 	if(!file_exists(ref_path))
 	{
-		printf("missing");
-		jnx_term_printf_in_color(JNX_COL_MAGENTA," .pickled ");
-	   	jnx_term_default();
-		printf("file for %s\n",ref_path);
-		jnx_term_printf_in_color(JNX_COL_RED,"Ignoring test for %s\n",fpath);
-		jnx_term_default();
+		FILE *fp;
+		if((fp = fopen(ref_path,"w")) == NULL)
+		{
+			return 1;
+		}
 	}
-	else{
-		//references to other files
-		char *ref_buffer;
-		size_t o = jnx_file_read(ref_path,&ref_buffer);
-		//framework_path gets set on system installation
-		char *out = build_string(fpath,ref_buffer,framework_path);
-		printf("%s\n",out);
-		free(out);
-		free(ref_buffer);
+
+	char *ref_buffer;
+	size_t o = jnx_file_read(ref_path,&ref_buffer);
+	if(ref_buffer[strlen(ref_buffer) -1] == '\n') 
+	{
+		ref_buffer[strlen(ref_buffer) -1] = '\0';
 	}
+	printf("ref_buffer: %s\n",ref_buffer);
+	char *out = build_string(fpath,ref_buffer,framework_path);
+	printf("-->%s<--\n",out);
+
+	//build
+	//		int ret = system(out);
+
+	free(out);
+	free(ref_buffer);
 	free(ref_path);
 	return 0;
 }
