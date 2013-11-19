@@ -44,7 +44,18 @@ int file_exists(char *f)
 		return 0;
 	}
 }
-static char *build_string(char *fpath,char *obj_references, char *framework_references)
+static char *executable_name(char *filename)
+{
+	char *n = malloc(sizeof(char)*512);
+	char *name = strdup(filename);
+	bzero(n,sizeof(char)*512);
+	strncpy(n,"test_",strlen("test_"));
+	strtok(n,".");
+	strncat(n,name,strlen(name));
+	free(name);
+	return n;
+}
+static char *build_string(char *fpath,char *obj_references, char *framework_references, char *test_exe)
 {
 	char *b = malloc(sizeof(char) * 2048);
 	bzero(b,sizeof(char) * 2048);
@@ -59,38 +70,49 @@ static char *build_string(char *fpath,char *obj_references, char *framework_refe
 	strncat(b," ",1);
 	strncat(b,"-o",2);
 	strncat(b," ",1);
-	strncat(b,"test_",strlen("test_"));
+	strncat(b,test_exe,strlen(test_exe));
 	strtok(fpath,".");
 	strncat(b,fpath,strlen(fpath));
 	return b;
 }
 int compile_test(char *fpath)
 {
+	//get the framework path
 	char *framework_path = jnx_hash_get(configuration,"FRAMEWORK");
 	assert(framework_path);
-
+	//get test_exe name
+	char *test_exe_name = executable_name(fpath);
+	//check for existing test_exe
+	if(file_exists(test_exe_name))
+	{
+		printf("exe for %s already exists\n",test_exe_name);
+		remove(test_exe_name);
+	}	
+	//get the reference path
 	char *ref_path = get_ref_path(strdup(fpath));
 	if(!file_exists(ref_path))
 	{
+		//create new .pickled file
 		FILE *fp;
 		if((fp = fopen(ref_path,"w")) == NULL)
 		{
 			return 1;
 		}
+		fclose(fp);
 	}
-
+	//read from pickled file	
 	char *ref_buffer;
 	size_t o = jnx_file_read(ref_path,&ref_buffer);
 	if(ref_buffer[strlen(ref_buffer) -1] == '\n') 
 	{
 		ref_buffer[strlen(ref_buffer) -1] = '\0';
 	}
-	char *out = build_string(fpath,ref_buffer,framework_path);
+	//create build string
+	char *out = build_string(fpath,ref_buffer,framework_path,test_exe_name);
 	printf("-->%s<--\n",out);
 
-	//build
-	//		int ret = system(out);
-
+	int ret = system(out);
+	free(test_exe_name);
 	free(out);
 	free(ref_buffer);
 	free(ref_path);

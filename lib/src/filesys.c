@@ -23,6 +23,7 @@
 #define __USE_XOPEN_EXTENDED
 #include <ftw.h>
 #include <jnxc_headers/jnxhash.h>
+#include <jnxc_headers/jnxfile.h>
 #include "compile.h"
 extern jnx_hashmap *configuration;
 static int dir_exists(char *dir)
@@ -68,7 +69,7 @@ void filesys_steps_from_features()
 		printf("step_definitions already exist - Overwrite?[Y/N]\n");
 		char c = getchar();
 		if(c == 'Y' || c == 'y'){
-			nftw(featurepath,feature_walk,atoi(jnx_hash_get(configuration,"FTWDEPTH")),FTW_DEPTH | FTW_SL);
+			jnx_file_recursive_delete(jnx_hash_get(configuration,"STEPPATH"),5);
 		}
 		else{
 			printf("Ignoring\n");
@@ -86,17 +87,17 @@ int step_walk(const char *fpath, const struct stat *sb, int typeflag, struct FTW
 	switch(typeflag)
 	{
 		case FTW_F:
-			if(!strstr(fpath + ftwbuf->base,REF_FILE_EXT))
-			{
-				if(compile_test((char*)fpath + ftwbuf->base) != 0)
+				if(!strstr(fpath + ftwbuf->base,REF_FILE_EXT))
 				{
-					printf("Could not find appropriate .pickled file for [%s] object file references\n",fpath+ftwbuf->base);
+					if(compile_test((char*)fpath + ftwbuf->base) != 0)
+					{
+						printf("Could not find appropriate .pickled file for [%s] object file references\n",fpath+ftwbuf->base);
+					}
+					else
+					{
+						//run test?
+					}
 				}
-				else
-				{
-					//run test?
-				}
-			}
 			break;
 	}
 	return 0;
