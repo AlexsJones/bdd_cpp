@@ -50,15 +50,10 @@ static char *build_string(char *fpath,char *obj_references, char *framework_refe
 	bzero(b,sizeof(char) * 2048);
 	strncpy(b,COMPILER,strlen(COMPILER));
 	strncat(b," ",1);
-	printf("1 : %s\n",b);
 	strncat(b,fpath,strlen(fpath));
-	printf("2 : %s\n",b);
 	strncat(b," ",1);
-	printf("3 : %s\n",b);
 	strncat(b,obj_references,strlen(obj_references));
-	printf("4 : %s\n",b);
 	strncat(b," ",1);
-	//framework references
 	strncat(b,framework_references,strlen(framework_references));	
 	strncat(b,"/*.c",4);
 	strncat(b," ",1);
@@ -90,7 +85,6 @@ int compile_test(char *fpath)
 	{
 		ref_buffer[strlen(ref_buffer) -1] = '\0';
 	}
-	printf("ref_buffer: %s\n",ref_buffer);
 	char *out = build_string(fpath,ref_buffer,framework_path);
 	printf("-->%s<--\n",out);
 
