@@ -28,7 +28,7 @@ extern jnx_hashmap *configuration;
 void run(char *filepath)
 {
 	char buffer[512];
-	sprintf(buffer,".%s/%s",jnx_hash_get(configuration,"BUILDPATH"),filepath);
+	sprintf(buffer,"%s/%s",jnx_hash_get(configuration,"BUILDPATH"),filepath);
 	printf("%s\n",buffer);
 	int ret = system(buffer);
 	printf("%s returned [%d]\n",buffer,ret);
