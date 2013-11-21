@@ -52,11 +52,11 @@ static char *refs(char *test_exe)
 		char *microbuff;
 		size_t read_bytes = jnx_file_read(r,&microbuff);
 		strncpy(buffer,microbuff,strlen(microbuff));
-				free(microbuff);
-				if(buffer[strlen(buffer) -1] == '\n')
-				{
-					buffer[strlen(buffer) -1] = '\0';
-				}
+		free(microbuff);
+		if(buffer[strlen(buffer) -1] == '\n')
+		{
+			buffer[strlen(buffer) -1] = '\0';
+		}
 	}
 	free(r);
 	return buffer;
@@ -87,6 +87,10 @@ static char *build_string(char *fpath,char *obj_references, char *framework_refe
 	strncat(b," ",1);
 	strncat(b,"-o",2);
 	strncat(b," ",1);
+	char *build_dir= jnx_hash_get(configuration,"BUILDPATH");
+	assert(build_dir);
+	strncat(b,build_dir,strlen(build_dir));
+	strncat(b,"/",1);
 	strncat(b,test_exe,strlen(test_exe));
 	return b;
 }
@@ -97,6 +101,7 @@ int compile_test(char *fpath)
 	assert(framework_path);
 	//get test_exe name
 	char *test_exe_name = executable_name(fpath);
+	assert(test_exe_name);
 	printf("NAME:  %s\n",test_exe_name);
 
 	if(file_exists(test_exe_name))
@@ -112,6 +117,8 @@ int compile_test(char *fpath)
 	char *build_str = build_string(fpath,r,framework_path,test_exe_name);
 	jnx_term_printf_in_color(JNX_COL_MAGENTA,"%s\n",build_str);
 	jnx_term_default();
+	int ret = system(build_str);
+	printf("System returned [%d]\n",ret);
 	free(test_exe_name);
 	return 0;
 }

@@ -25,6 +25,7 @@
 #include <jnxc_headers/jnxhash.h>
 #include <jnxc_headers/jnxfile.h>
 #include "compile.h"
+#include "executor.h"
 extern jnx_hashmap *configuration;
 static int dir_exists(char *dir)
 {
@@ -41,7 +42,6 @@ static int dir_exists(char *dir)
 }
 int feature_walk(const char *fpath, const struct stat *sb, int typeflag, struct FTW *ftwbuf)
 {
-
 	jnx_list *feature_contents = NULL;
 	switch(typeflag)
 	{
@@ -87,17 +87,14 @@ int step_walk(const char *fpath, const struct stat *sb, int typeflag, struct FTW
 	switch(typeflag)
 	{
 		case FTW_F:
-				if(!strstr(fpath + ftwbuf->base,REF_FILE_EXT))
+			if(!strstr(fpath + ftwbuf->base,REF_FILE_EXT))
+			{
+				if(compile_test((char*)fpath + ftwbuf->base) != 0)
 				{
-					if(compile_test((char*)fpath + ftwbuf->base) != 0)
-					{
-						printf("Could not find appropriate .pickled file for [%s] object file references\n",fpath+ftwbuf->base);
-					}
-					else
-					{
-						//run test?
-					}
+					printf("An error occured compiling test!\n");
+					return 1;
 				}
+			}
 			break;
 	}
 	return 0;
@@ -111,10 +108,7 @@ void filesys_test_from_steps()
 	}
 	//parse
 	nftw(step_path,step_walk,atoi(jnx_hash_get(configuration,"FTWDEPTH")),FTW_DEPTH | FTW_SL);
-
-	//compile
-
-	//execute
-
-	//return
+	char *build_path = jnx_hash_get(configuration,"BUILDPATH");
+	//test time
+	execute();
 }

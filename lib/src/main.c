@@ -50,7 +50,7 @@ int main(int argc, char **argv)
 			remove(sp);
 		}
 		if(strcmp(argv[c],"gen") == 0)
-		{
+		{ 
 			filesys_steps_from_features();
 			return 0;
 		}
@@ -62,7 +62,19 @@ int main(int argc, char **argv)
 		}else if(argc == 1)
 		{
 			//pickle run
-			filesys_test_from_steps();
+			char *path;
+			if(jnx_file_mktempdir("/tmp",&path) == 0)
+			{
+				printf("Creating new build directory %s\n",path);
+				jnx_hash_put(configuration,"BUILDPATH",path);	
+				filesys_test_from_steps();
+				jnx_file_recursive_delete(path,8);
+				free(path);
+			}else
+			{
+				jnx_term_printf_in_color(JNX_COL_RED,"Could not create temp build output\n");
+				jnx_term_default();
+			}
 		}
 	}
 	jnx_hash_delete(configuration);
