@@ -101,13 +101,17 @@ int compile_test(char *fpath)
 
 	if(file_exists(test_exe_name))
 	{
-		printf("Removing defunct binary file\n");
+		printf("Removing defunct binary file for [%s]\n",test_exe_name);
 		remove(test_exe_name);
 	}
 	//get the reference path
 	char *r = refs(test_exe_name);	
 	printf("references ->%s<-\n",r);
 	free(r);
+
+	char *build_str = build_string(fpath,r,framework_path,test_exe_name);
+	jnx_term_printf_in_color(JNX_COL_MAGENTA,"%s\n",build_str);
+	jnx_term_default();
 	free(test_exe_name);
 	return 0;
 }
