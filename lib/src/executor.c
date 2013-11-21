@@ -18,6 +18,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <jnxc_headers/jnxterm.h>
 #include <jnxc_headers/jnxhash.h>
 #include "executor.h"
 #include <stdio.h>
@@ -31,7 +32,15 @@ void run(char *filepath)
 	sprintf(buffer,"%s/%s",jnx_hash_get(configuration,"BUILDPATH"),filepath);
 	printf("%s\n",buffer);
 	int ret = system(buffer);
-	printf("%s returned [%d]\n",buffer,ret);
+	switch(ret)
+	{
+		case 0:
+			jnx_term_printf_in_color(JNX_COL_GREEN,"PASS\n");
+			jnx_term_default();	
+			break;
+		default:
+			jnx_term_printf_in_color(JNX_COL_RED,"FAIL\n");
+	}
 }
 int file_walk(const char *fpath, const struct stat *sb, int typeflag, struct FTW *ftwbuf)
 {
