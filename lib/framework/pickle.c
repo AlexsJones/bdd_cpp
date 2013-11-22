@@ -20,6 +20,6 @@
 #include "pickle.h"
 void pickle_not_implemented()
 {
-	jnx_term_printf_in_color(JNX_COL_RED,"NOT IMPLEMENTED\n");
+	jnx_term_printf_in_color(JNX_COL_YELLOW,"NOT IMPLEMENTED\n");
 	jnx_term_default();
 }

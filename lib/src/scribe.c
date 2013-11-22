@@ -43,7 +43,7 @@ extern jnx_hashmap *configuration;
 #include <%s/pickle.h>\n\
 "
 #define METHOD "int?%s(void)\n{\npickle_not_implemented();\n};\n"
-#define CALLER "%s();\n"
+#define CALLER "n?+=?%s();\n"
 char *scribe_write_header(char *filename,char *desc)
 {
 	char *fworkpath = jnx_hash_get(configuration,"FRAMEWORK");
@@ -155,7 +155,7 @@ void scribe_new(jnx_list *h,char *f)
 	}
 	//now lets go over the list again and pull out callers
 	methodsl->head = methodsh;
-	write_file("int main(int argc, char **argv){\n\n",stepfilename);
+	write_file("int main(int argc, char **argv){\n\nint n = 0;\n",stepfilename);
 	while(methodsl->head)
 	{
 		feature_component *f = methodsl->head->_data;
@@ -167,6 +167,6 @@ void scribe_new(jnx_list *h,char *f)
 		free(f);
 		methodsl->head = methodsl->head->next_node;
 	}
-	write_file("\n\nreturn 0;\n };",stepfilename);
+	write_file("\n\nreturn n;\n };",stepfilename);
 	jnx_list_delete(&methodsl);
 }

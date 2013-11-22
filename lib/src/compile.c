@@ -35,16 +35,23 @@ int file_exists(char *f)
 		return 0;
 	}
 }
-static char *refs(char *test_exe)
+static char *refs(char *fpath)
 {
 	char *r = malloc(sizeof(char)*256);
 	bzero(r,sizeof(char)*256);
-	strncpy(r,test_exe,strlen(test_exe));
+	strtok(fpath,".");
+	strncpy(r,fpath,strlen(fpath));
 	strncat(r,".",1);
 	strncat(r,REF_FILE_EXT,strlen(REF_FILE_EXT));
 
 	char *buffer = malloc(sizeof(char)*1024);
 	bzero(buffer,sizeof(char)*1024);
+	printf("Looking for ");
+	jnx_term_printf_in_color(JNX_COL_CYAN,".pickled");
+	jnx_term_default();
+	printf(" file\n");
+	//free our duped string
+	free(fpath);
 	if(!file_exists(r))
 	{
 		strncpy(buffer," ",1);
@@ -110,15 +117,15 @@ int compile_test(char *fpath)
 		remove(test_exe_name);
 	}
 	//get the reference path
-	char *r = refs(test_exe_name);	
+	char *r = refs(strdup(fpath));	
 	printf("references ->%s<-\n",r);
-	free(r);
 
 	char *build_str = build_string(fpath,r,framework_path,test_exe_name);
 	jnx_term_printf_in_color(JNX_COL_MAGENTA,"%s\n",build_str);
 	jnx_term_default();
 	int ret = system(build_str);
 	printf("System returned [%d]\n",ret);
+	free(r);
 	free(test_exe_name);
 	return 0;
 }
