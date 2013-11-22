@@ -1,3 +1,8 @@
+Example
+=======
+BDD for C!
+http://showterm.io/b998a6a7968916d6abed6
+
 Installation
 ===========
 
