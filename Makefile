@@ -3,7 +3,7 @@ all:
 increment:
 	./lib/scripts/inc
 install:
-	cp pickle /usr/bin
+	mv pickle /usr/bin
 	mkdir -p /usr/share/pickle
 	cp -r lib/framework /usr/share/pickle
 uninstall:
