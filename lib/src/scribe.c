@@ -39,7 +39,7 @@ extern jnx_hashmap *configuration;
 *\n\
 * =====================================================================================\n\
 */\n"
-#define METHOD "int %s(void)\n{\n\n};\n"
+#define METHOD "int?%s(void)\n{\n\n};\n"
 char *scribe_write_header(char *filename,char *desc)
 {
 	char *s = malloc(sizeof(char) * (strlen(HEADER) + strlen(filename)));
@@ -59,6 +59,10 @@ char *remove_empty_spaces(char *s)
 		{
 			s[c] = '_';
 		}	
+		if(s[c] == '?')
+		{
+			s[c] = ' ';
+		}
 		++c;
 	}
 	return s;
@@ -71,8 +75,6 @@ char *scribe_write_method(char *name)
 }
 size_t write_file(char *str,char *path)
 {
-	
-	
 	FILE* fp;
 	if ((fp = fopen(path, "a")) == NULL) {
 		perror("file: ");
@@ -141,6 +143,7 @@ void scribe_new(jnx_list *h,char *f)
 		
 		char buffer[512];
 		sprintf(buffer,METHOD,f->str);
+		//write
 		write_file(remove_empty_spaces(buffer),stepfilename);	
 		free(f->str);
 		free(f);

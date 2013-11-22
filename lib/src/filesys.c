@@ -75,11 +75,10 @@ void filesys_steps_from_features()
 			printf("Ignoring\n");
 		}
 
-	}else{
-		int d = mkdir(jnx_hash_get(configuration,"STEPPATH"),S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-		if(d == 0) { printf("Created new step_definitions directory\n");
-			nftw(featurepath,feature_walk,atoi(jnx_hash_get(configuration,"FTWDEPTH")),FTW_DEPTH | FTW_SL);
-		}
+	}
+	int d = mkdir(jnx_hash_get(configuration,"STEPPATH"),S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+	if(d == 0) { printf("Created new step_definitions directory\n");
+		nftw(featurepath,feature_walk,atoi(jnx_hash_get(configuration,"FTWDEPTH")),FTW_DEPTH | FTW_SL);
 	}
 }
 int step_walk(const char *fpath, const struct stat *sb, int typeflag, struct FTW *ftwbuf)
