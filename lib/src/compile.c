@@ -85,7 +85,7 @@ static char *build_string(char *fpath,char *obj_references, char *framework_refe
 	strncat(b,framework_references,strlen(framework_references));	
 	strncat(b,"/*.c",4);
 	strncat(b," ",1);
-	strncat(b,"-o",2);
+	strncat(b," -ljnxc -o",10);
 	strncat(b," ",1);
 	char *build_dir= jnx_hash_get(configuration,"BUILDPATH");
 	assert(build_dir);

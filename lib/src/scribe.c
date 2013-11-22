@@ -38,16 +38,21 @@ extern jnx_hashmap *configuration;
 *         Author:  ANON, \n\
 *\n\
 * =====================================================================================\n\
-*/\n"
-#define METHOD "int?%s(void)\n{\n\n};\n"
+*/\n\
+#include <stdio.h>\n\
+#include <%s/pickle.h>\n\
+"
+#define METHOD "int?%s(void)\n{\npickle_not_implemented();\n};\n"
+#define CALLER "%s();\n"
 char *scribe_write_header(char *filename,char *desc)
 {
-	char *s = malloc(sizeof(char) * (strlen(HEADER) + strlen(filename)));
+	char *fworkpath = jnx_hash_get(configuration,"FRAMEWORK");
+	char *s = malloc(sizeof(char) * (strlen(HEADER) + strlen(filename) + strlen(fworkpath)));
 	time_t t;
 	time(&t);
 	char *createtime = malloc(sizeof(char) * 46);
 	ctime_r(&t,createtime);
-	sprintf(s,HEADER,filename,desc,createtime);
+	sprintf(s,HEADER,filename,desc,createtime,fworkpath);
 	return s;
 }
 char *remove_empty_spaces(char *s)
@@ -136,18 +141,32 @@ void scribe_new(jnx_list *h,char *f)
 	free(filename);
 	free(desc);
 	jnx_list_delete(&h);
-
+	
+	jnx_node *methodsh = methodsl->head;
 	while(methodsl->head)
 	{
 		feature_component *f = methodsl->head->_data;
 		
 		char buffer[512];
-		sprintf(buffer,METHOD,f->str);
-		//write
+		sprintf(buffer,METHOD,f->str,f->str);
+		//write method
+		write_file(remove_empty_spaces(buffer),stepfilename);	
+		methodsl->head = methodsl->head->next_node;
+	}
+	//now lets go over the list again and pull out callers
+	methodsl->head = methodsh;
+	write_file("int main(int argc, char **argv){\n\n",stepfilename);
+	while(methodsl->head)
+	{
+		feature_component *f = methodsl->head->_data;
+		char buffer[512];
+		sprintf(buffer,CALLER,f->str);
+		//write method
 		write_file(remove_empty_spaces(buffer),stepfilename);	
 		free(f->str);
 		free(f);
 		methodsl->head = methodsl->head->next_node;
 	}
+	write_file("\n\nreturn 0;\n };",stepfilename);
 	jnx_list_delete(&methodsl);
 }
