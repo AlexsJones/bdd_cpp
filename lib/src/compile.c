@@ -125,6 +125,7 @@ int compile_test(char *fpath)
 	jnx_term_default();
 	int ret = system(build_str);
 	printf("System returned [%d]\n",ret);
+	free(build_str);
 	free(r);
 	free(test_exe_name);
 	return 0;

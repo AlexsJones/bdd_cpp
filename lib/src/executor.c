@@ -55,7 +55,5 @@ int file_walk(const char *fpath, const struct stat *sb, int typeflag, struct FTW
 }
 void execute()
 {
-
 	nftw(jnx_hash_get(configuration,"BUILDPATH"),file_walk,atoi(jnx_hash_get(configuration,"FTWDEPTH")),FTW_DEPTH | FTW_SL);
-
 }
