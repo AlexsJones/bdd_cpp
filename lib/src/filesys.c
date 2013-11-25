@@ -50,6 +50,14 @@ int feature_walk(const char *fpath, const struct stat *sb, int typeflag, struct 
 			if(feature_contents){
 				scribe_new(feature_contents,(char*)fpath + ftwbuf->base);
 			}
+			while(feature_contents->head)
+			{
+				feature_component *f = feature_contents->head->_data;
+				free(f->str);
+				free(f);
+				feature_contents->head = feature_contents->head->next_node;
+			}
+			jnx_list_delete(&feature_contents);
 			break;
 	}
 	return 0;
