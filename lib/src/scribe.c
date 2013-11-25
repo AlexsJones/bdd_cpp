@@ -42,7 +42,7 @@ extern jnx_hashmap *configuration;
 #include <stdio.h>\n\
 #include <%s/pickle.h>\n\
 "
-#define METHOD "int?%s(void)\n{\npickle_not_implemented();\n};\n"
+#define METHOD "int?%s(void)\n{\nreturn pickle_not_implemented();\n};\n"
 #define CALLER "n?+=?%s();\n"
 char *scribe_write_header(char *filename,char *desc)
 {

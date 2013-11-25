@@ -18,8 +18,23 @@
 #include <stdlib.h>
 #include <jnxc_headers/jnxterm.h>
 #include "pickle.h"
-void pickle_not_implemented()
+int pickle_process(state _s)
 {
-	jnx_term_printf_in_color(JNX_COL_YELLOW,"NOT IMPLEMENTED\n");
-	jnx_term_default();
+	switch(_s)
+	{
+		case PASS:
+			jnx_term_printf_in_color(JNX_COL_GREEN,"PASS\n");
+			jnx_term_default();
+			return 0;
+			break;
+		case FAIL:
+			jnx_term_printf_in_color(JNX_COL_RED,"FAIL\n");
+			jnx_term_default();
+			return 1;
+			break;
+		case NOT_IMPLMENTED:
+			jnx_term_printf_in_color(JNX_COL_YELLOW,"NOT IMPLEMENTED\n");
+			jnx_term_default();
+			return 1;
+	}
 }

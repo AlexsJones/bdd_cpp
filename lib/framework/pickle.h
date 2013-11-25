@@ -15,5 +15,8 @@
  *
  * =====================================================================================
  */
-void pickle_not_implemented();
-
+#ifndef __PICKLE_MACRO__
+#define __PICKLE_MACRO__
+typedef enum { PASS, FAIL, NOT_IMPLMENTED }state;
+int pickle_process(state _s);
+#endif
