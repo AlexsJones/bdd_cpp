@@ -32,3 +32,5 @@ check_jnxlibc
 
 make
 sudo make install
+VERSION=`cat lib/conf/version`
+echo "Installed Pickled $VERSION"
