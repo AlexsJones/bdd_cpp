@@ -6,7 +6,8 @@ http://showterm.io/85b2ea969c55baf0efa4a
 Installation
 ===========
 
-deps: jnxlibc [ git@github.com:AlexsJones/jnxlibc.git ]
+//deps: jnxlibc [ git@github.com:AlexsJones/jnxlibc.git ]
+(It will pull in it's own dependencies - just stay connected to the net)
 
 make
 
@@ -22,8 +23,7 @@ sudo make uninstall
 Usage
 =====
 
-
-pickle -g
+pickle gen
 
 //Generates step_definitions in your CWD from features/*
 
