@@ -1,5 +1,3 @@
-:octocat:
-
 Example
 =======
 BDD for C!
