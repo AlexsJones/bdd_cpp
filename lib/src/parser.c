@@ -69,7 +69,7 @@ void write_data(int global_context,char *str)
 {
 	if(components == NULL)
 	{
-		components = jnx_list_init();
+		components = jnx_list_create();
 	}
 	char *key = i[global_context], *value = str;
 	if(check_exist(key))
@@ -119,10 +119,10 @@ jnx_list* parse_file_to_data(char *fp)
 {
 	if(components != NULL)
 	{
-		jnx_list_delete(&components);
+		jnx_list_destroy(&components);
 	}
 	char *b = NULL;
-	size_t rb = jnx_file_read(fp,&b);	
+	size_t rb = jnx_file_read(fp,&b,"r");	
 	if(!b)
 	{
 		printf("Unable to read file\n");
@@ -130,7 +130,7 @@ jnx_list* parse_file_to_data(char *fp)
 	}
 	char *s = strdup(b);
 	free(b);
-	jnx_list *lines = jnx_list_init();
+	jnx_list *lines = jnx_list_create();
 	while(*s != '\0')
 	{
 		char line[256];
@@ -148,6 +148,6 @@ jnx_list* parse_file_to_data(char *fp)
 		++s;	
 	}	
 	scan_lines(lines);
-	jnx_list_delete(&lines);
+	jnx_list_destroy(&lines);
 	return components;
 }

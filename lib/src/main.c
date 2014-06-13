@@ -34,7 +34,7 @@ void title()
 }
 int main(int argc, char **argv)
 {
-	configuration = jnx_hash_init(1024);
+	configuration = jnx_hash_create(1024);
 	jnx_hash_put(configuration,"FEATUREPATH","features");
 	jnx_hash_put(configuration,"FTWDEPTH","8");
 	jnx_hash_put(configuration,"STEPPATH","step_definitions");
@@ -77,7 +77,7 @@ int main(int argc, char **argv)
 			}
 		}
 	}
-	jnx_hash_delete(configuration);
+	jnx_hash_destroy(&configuration);
 	return 0;
 }
 

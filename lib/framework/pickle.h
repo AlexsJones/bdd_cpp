@@ -19,4 +19,5 @@
 #define __PICKLE_MACRO__
 typedef enum { PASS, FAIL, NOT_IMPLMENTED }state;
 int pickle_process(state _s);
+int pickle_evaluate();
 #endif

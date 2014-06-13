@@ -57,7 +57,7 @@ static char *refs(char *fpath)
 		strncpy(buffer," ",1);
 	}else{
 		char *microbuff;
-		size_t read_bytes = jnx_file_read(r,&microbuff);
+		size_t read_bytes = jnx_file_read(r,&microbuff,"r");
 		strncpy(buffer,microbuff,strlen(microbuff));
 		free(microbuff);
 		if(buffer[strlen(buffer) -1] == '\n')

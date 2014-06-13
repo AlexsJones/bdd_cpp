@@ -114,7 +114,7 @@ void scribe_new(jnx_list *h,char *f)
 	char *stepfilename = create_feature_name(f);
 	purge_existing(stepfilename);
 	jnx_node *r = h->head;
-	jnx_list *methodsl = jnx_list_init();
+	jnx_list *methodsl = jnx_list_create();
 	char *filename=NULL,*desc=NULL;
 	while(h->head)
 	{
@@ -140,7 +140,7 @@ void scribe_new(jnx_list *h,char *f)
 	write_file(_header,stepfilename);
 	free(filename);
 	free(desc);
-	jnx_list_delete(&h);
+	jnx_list_destroy(&h);
 	
 	jnx_node *methodsh = methodsl->head;
 	while(methodsl->head)
@@ -168,5 +168,5 @@ void scribe_new(jnx_list *h,char *f)
 		methodsl->head = methodsl->head->next_node;
 	}
 	write_file("\n\nreturn n;\n };",stepfilename);
-	jnx_list_delete(&methodsl);
+	jnx_list_destroy(&methodsl);
 }
