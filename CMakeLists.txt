@@ -1,0 +1,8 @@
+cmake_minimum_required(VERSION 2.8)
+project(pickle)
+set(CMAKE_INSTALL_PREFIX /usr)
+include_directories(${PROJECT_INC_DIR}lib/src)
+FILE(GLOB SRCS "lib/src/*.c")
+add_executable(pickle ${SRCS}) 
+target_link_libraries(pickle -ljnxc)
+install(TARGETS pickle DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)

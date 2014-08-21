@@ -1,0 +1,1 @@
+/usr/bin/cc   -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/pickle.dir/lib/src/compile.c.o CMakeFiles/pickle.dir/lib/src/executor.c.o CMakeFiles/pickle.dir/lib/src/filesys.c.o CMakeFiles/pickle.dir/lib/src/main.c.o CMakeFiles/pickle.dir/lib/src/parser.c.o CMakeFiles/pickle.dir/lib/src/scribe.c.o  -o pickle  -ljnxc 
