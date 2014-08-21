@@ -1,3 +1,6 @@
+*.dSYM
+CMakeCache.txt
+cmake_install*
 .pickled
 test
 step_definitions
